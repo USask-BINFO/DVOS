@@ -1,0 +1,145 @@
+BasicConfig:
+    DEBUGGING: False
+    LOGGER: null
+    SEED: 123
+    DETERMINISTIC_CUDANN: True
+    BENCHMARK_CUDANN: False
+    DETERMINISTIC_ALGORITHM: False
+    DEVICE: cuda                    # Options: `cuda` or `cpu`
+    DEFAULT_DEVICE_IDs: [0, 1]      # Options: `null` for not setting a default device, `an int` numbers for a specific GPU
+    DATASET: WheatVideoData
+    ROOT_LOG_DIR: Experiments/
+    DEVELOPMENT_PHASE: TRAIN                 # Options: TRAIN, TEST
+    PROJECT_NAME: DiffUNetVOS                # W&B project name
+    ENTITY: keyhan                           # W&B entity name
+    EXPERIMENT_NAME: Exp20_WholeArchitecture-WithoutDiffusion_OnSynthetic
+    TEST_EXPERIMENT_DIR: Harvestable
+
+# ================= ================= =================
+TrainConfig:
+    DISTRIBUTED: True               # DDP training
+    COMPILE: True
+    NUM_EPOCHS: 15
+    BATCH_SIZE: 16
+    TRANSFORM_MEAN: [0.45829801, 0.46257378, 0.4352858]
+    TRANSFORM_STD:  [0.21251279, 0.18627654, 0.20333255]
+    SHUFFLE: True
+    NUM_WORKERS: 8 
+    PREFETCH_FACTOR: 2
+    PIN_MEMORY: False
+
+    # ================= Optimizers
+    Optimizer:
+        NAME: AdamW
+        PARAMS:
+            lr: 1e-4
+            weight_decay: 1e-5
+        SCHEDULER: 
+            APPLY: True
+            NAME: CosineAnnealingLR
+            PARAMS: 
+                T_max: 15
+                eta_min: 1e-5
+
+    # ================= criteria and scores. 
+    Losses: 
+        RECONSTRUCTION_LOSS_WEIGHT: 1.0   # Used only for training. 
+        SEGMENTATION_LOSS_WEIGHT: 1.0     # Used only for training. 
+
+        RECONSTRUCTION_LOSSES: # Reference Losses: https://www.mdpi.com/2504-4990/2/2/6 - (# Options: `MSE`, `MAE`, `SSIM`, `PERCEPTUAL`, `GDL`)
+          - mse         # Also change `RECONSTRUCTION_GDL_ALPHA`
+          - ssim
+        RECONSTRUCTION_LOSSES_WEIGHTS:
+          - 1.0
+          - 1.0
+        RECONSTRUCTION_GDL_ALPHA: 1.0             # alpha for the gradient difference loss power. 1 for L1 (MAE) and 2 for L2 (MSE)
+        RECONSTRUCTION_GDL_REDUCTION: "MEAN"      # "SUM" or "MEAN"
+        SEGMENTATION_LOSSES:  # https://www.semanticscholar.org/reader/e999bd1eb04c4343ca725a2e461ee5d1806be11e - (# Options: `BCE`, `DICE`, `IOU`, `TV`, `FOCAL`, `FTVERS`)
+          - bce
+          - dice
+        SEGMENTATION_LOSSES_WEIGHTS:
+          - 1.0
+          - 1.0
+        SEGMENTATION_SIGMOID: True          # Apply sigmoid to the output before computing the losses.
+        SEGMENTATION_THRESHOLD: 0.5         # Sigmoid threshold
+        SEGMENTATION_ALPHA: 0.7             # alpha for tversky loss along with beta, higher if false positives are more detrimental
+        SEGMENTATION_BETA: 0.3              # beta for tversky loss along with alpha, higher if false negatives are more detrimental
+        SEGMENTATION_GAMMA: 2.0             # gamma for focal and tversky_focal loss
+        SEGMENTATION_REDUCTION: "MEAN"      # "SUM" or "MEAN"
+        SEGMENTATION_SMOOTH: 1e-12
+
+    # ================= Metadata paths and structures. 
+    IMG_SHAPE: [3, 256, 256]
+    NUM_REFERENCES: 4               # The number of reference frames to include (r)
+    REFERENCES_INTERVAL: 1           # Reference frames interval: query_index - ((i in [1, ..., r]) * interval)
+    QUERY_IDENTIFIER: 1              # Labels == 1 are signed as the query frames.
+
+    VID: VID                         # The column name of the group ids in the metadata csv files. 
+    FID: FID                         # The column name of the image ids in the metadata csv files.
+    APPLY_COLOR_AUGMENTATION: True   # Whether apply color transformations to the training set or not.
+
+    UsingSmallData: False            # If train the model on the small size dataset. 
+    UsingSamllSize: 0                # Use this number as the dataset size in each batch. 
+
+    TRAIN_METADATA_PATH:
+        SEGMENTATION: 
+            - ../SyntheticWheatData/training.csv
+
+    VALID_METADATA_PATH:
+        SEGMENTATION: 
+            - ../SyntheticWheatData/validation.csv
+
+    TEST_METADATA_PATH:
+        SEGMENTATION:
+            - ../TestData/HarvestableYellowFrames/PsiTesting.csv
+            # - ../TestData/Drone1024Patches/GammaTesting.csv  
+            # - ../PseudoLabeledData/testing.csv
+
+    # ================= Diffusion Process Parameters. 
+    InputDiffusion:
+        APPLY: False
+        NUMSTEPS: 1000
+        TIMESTEPS: 750 
+        BETA_RANGE: 
+            - 1e-4
+            - 1e-2
+        PATCH_SIZE: 32
+        MP: 0.0                     # Mask input probability
+        DP: 0.5                     # Diffuse input probability
+    Diffusion:
+        APPLY: False 
+        TIMESTEPS: 1000
+        P: 1.0
+        INIT_ALPHA: 3.0             # a + t ----> INIT_ALPHA + t where t belongs to the range of 0 and length of BASE_CHANNELS_MULTIPLIER
+        INIT_BETA: 18.0             # b * n ----> INIT_BETA * length of BASE_CHANNELS_MULTIPLIER
+        BETA_REDUCTION_COEFF: 2.0   # (b * n) - (b_coeff * t) ----> INIT_BETA - ((BETA_REDUCTION_COEFF * t) - 1) where t belongs to the range of 0 and length of BASE_CHANNELS_MULTIPLIER
+
+# ================= ================= =================
+ModelConfig:
+    IS_VIDEO_TASK: True
+    INIT_CHANNELS: 3
+    LATENT_CHANNELS: 256
+    BASE_CHANNELS: 4
+    BASE_CHANNELS_MULTIPLIER:
+        - 8
+        - 16
+        - 16
+        - 32
+        - 64
+    Heads_MIDDLE_CHANNELS: 32
+    NUM_RES_BLOCKS: 2
+    NUM_GROUPS: 4
+    SKIP_DROPOUT_RATIO: 0.3
+
+    # ================= Using pretrained models configurations 
+    FREEZE_ENCODER: False
+    FREEZE_DECODER: False
+    FREEZE_Heads: False
+    FREEZE_REC_HEAD: False   # Freeze the reconstruction head to train only with the segmentation branch. 
+    FREEZE_SEG_HEAD: False
+
+    # ================= pre-trained model path
+    PRETRAINED_MODEL_PATH: null
+
+    # ================= Model initializer parameters 
+    INIT_MODEL: False

@@ -1,0 +1,57 @@
+Basics:
+  SEED: 42
+  CREATE_OVERLAID_VIDEO: False
+  FRAMES_PER_SECOND: 10
+  VIDEOS_OUT_DIR: data/simulated/weak_green/videos/
+  VIDEOS_IDS_PREFIX: G
+  OUT_SIMULATION_DIR: data/simulated/weak_green/
+  OUT_METADATA_PATH: data/simulated/weak_green.csv
+
+BackgroundMetadata:
+  - data/backgrounds/metadata/green_gback00.csv
+  - data/backgrounds/metadata/green_gback01.csv
+  - data/backgrounds/metadata/green_gback20.csv
+  - data/backgrounds/metadata/green_gback21.csv
+  - data/backgrounds/metadata/green_gback22.csv
+  - data/backgrounds/metadata/green_gback30.csv
+  - data/backgrounds/metadata/green_gback40.csv
+  - data/backgrounds/metadata/green_gback41.csv
+  - data/backgrounds/metadata/green_gback42.csv
+  - data/backgrounds/metadata/green_gback50.csv
+  - data/backgrounds/metadata/green_gback60.csv
+  - data/backgrounds/metadata/green_Cell00-011.csv
+  - data/backgrounds/metadata/green_Cell01-021.csv
+
+RealObjectMetadata:
+  - data/foreground/metadata/stage1_real.csv
+  - data/foreground/metadata/stage2_real.csv
+
+FakePatchMetadata:
+  - data/foreground/metadata/stage1_fake.csv
+  - data/foreground/metadata/stage2_fake.csv
+
+Frame:
+  FRAME_MOVEMENT_RANGE: [0, 10]   #  range of pixels to shift the frame.
+  NODE_MOVEMENT_RANGE: [0, 5]
+  NUM_REALS_PER_FRAME: [10, 100]  # 10 to 100 real objects per frame
+  NUM_FAKES_PER_FRAME: [10, 100]   # 10 to 100 fake patches per frame
+  RECOVERY_VARIANCE: 3
+  ALLOW_LEAVE_FRAME: false       # if false does not allow the heads to leave the frame when moving the heads themselves. 
+  RECOVERY_AREA_EXPANSION: 3     # When recoverying the removed frames, expand the area where the newly added samples will be distributed in that area.
+  CHANGE_DIRECTION_PROBABILITY: 0.05
+
+Transformations:
+  HORIZONAL_FLIP_PROB: 0.0
+  VERTICAL_FLIP_PROB: 0.0
+  ROTATE_RANGE: [1, 5]
+  ROTATE_PROB: 0.3          # The probability of applying rotation
+  ELASTIC_ALPHA: [0, 2]     # A random number will be choosen between this range
+  ELASTIC_SIGMA: [0, 10]    # A random number will be choosen between this range
+  ELASTIC_ALPHA_AFFINE: [0, 15]
+  ELASTIC_PROB: 0.3         # The probability of applying elastic transformation
+
+Video:
+  VIDEO_HEIGHT: 1024
+  VIDEO_WIDTH: 1024
+  VIDEO_PER_BACKGROUND: 20    # The number of videos to be generated per background. 
+  NUM_REQUIRED_FRAMES: 60    # Number of frames to be generated for each video

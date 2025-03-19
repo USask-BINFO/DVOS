@@ -14,6 +14,7 @@ from tqdm import tqdm
 from typing import Tuple, Optional, Union, Dict, List, Callable
 
 import torch
+import torch.distributed as dist
 import torch.nn as nn
 import torch.multiprocessing as mp
 import torch.distributed as dist
@@ -27,6 +28,11 @@ from diffusion import SimpleDiffusion
 
 warnings.filterwarnings("ignore")
 
+# Restrict the number of threads used by PyTorch DataLoader
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["MKL_NUM_THREADS"] = "2"
+torch.set_num_threads(2)
+torch.set_num_interop_threads(2)
 
 
 def setup(rank, world_size):
@@ -180,7 +186,7 @@ def run_train(step_train_fn: Callable,
               scheduler: Callable, 
               epochs: int, 
               device: Union[int, str, torch.device], 
-              is_ddp: bool, 
+              is_ddp: bool,
               visualize_predictions: Callable, 
               visualize_losses: Callable, 
               log_records: Callable, 
@@ -238,8 +244,9 @@ def run_train(step_train_fn: Callable,
         if isinstance(device, int): dist.barrier()
         for (sq, sr) in tqdm(valid_loader, total=len(valid_loader), ncols=100, desc="Valid", disable=disable_tqdm):
             ground_query_images = sq[2].to(device)
-            ground_query_masks = sq[3].to(device)
+            ground_query_masks = sq[3].to(device) 
             ground_reference_images = [ref.to(device) for ref in sr[2]]
+
             rloss, sloss, predicted_query_images, predicted_query_masks = step_eval_fn(
                 ground_query_images, ground_query_masks, ground_reference_images
             ) 
@@ -306,12 +313,12 @@ def run_test(step_eval_fn: Callable,
     
     log_records(
         pd.DataFrame({
-            "RLoss": [losses["RLoss"]], "SLoss": [losses["SLoss"]],
-            "Dice":  [scores["dice"]],  "IoU":   [scores["iou"]]
+            "RLoss": [losses['RLoss']], "SLoss": [losses['SLoss']],
+            "Dice":  [scores['dice']],  "IoU":   [scores['iou']]
         })
     )
         
-    print(f"Test:: RecLoss: {losses["RLoss"]:0.3f}, SegLoss: {losses["SLoss"]:0.3f}, "
+    print(f"Test:: RecLoss: {losses['RLoss']:0.3f}, SegLoss: {losses['SLoss']:0.3f}, "
           f"Dice: {scores['dice']:0.2f}, IoU: {scores['iou']:0.2f}"
     )
 
@@ -349,7 +356,7 @@ def training_setup(rank: int,
                    world_size: int, 
                    configs: Dict
 ) -> None:
-    print(f"Running {"DDP" if isinstance(rank, int) else "MAIN"} process on {rank}.")
+    print(f"Running {'DDP' if isinstance(rank, int) else 'MAIN'} process on {rank}.")
     if configs.TrainConfig.DISTRIBUTED:
         setup(rank, world_size)
     
@@ -416,8 +423,8 @@ def training_setup(rank: int,
     run_train(
         step_train_fn, step_eval_fn, 
         train_loader, valid_loader, diffuser, 
-        score_fn, scheduler, 
-        configs.TrainConfig.NUM_EPOCHS, rank, configs.TrainConfig.DISTRIBUTED, 
+        score_fn, scheduler, configs.TrainConfig.NUM_EPOCHS, rank, 
+        configs.TrainConfig.DISTRIBUTED,
         visualize_predictions, visualize_losses, log_records, save_best_model
     )
     
@@ -456,7 +463,7 @@ def testing_setup(device: torch.device,
     log_records = partial(save_records, out_dir)
         
     step_eval_fn = partial(step_evaluate, model, loss_fn, configs)
-    run_test(step_eval_fn, test_loader, score_fn, device, 
+    run_test(step_eval_fn, test_loader, score_fn, device,
              visualize_predictions, log_records)   
       
      
@@ -498,7 +505,7 @@ if __name__ == "__main__":
         configs.BasicConfig.DETERMINISTIC_CUDANN,
         configs.BasicConfig.BENCHMARK_CUDANN, 
         configs.BasicConfig.DETERMINISTIC_ALGORITHM
-    )
+    )    
     
     start_time = datetime.now()
     
@@ -509,10 +516,14 @@ if __name__ == "__main__":
             configs=configs               
         )
     elif configs.TrainConfig.DISTRIBUTED:
+        if isinstance(configs.BasicConfig.DEFAULT_DEVICE_IDs, List):
+            os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(
+                map(str, configs.BasicConfig.DEFAULT_DEVICE_IDs)
+            )
         world_size = len(configs.BasicConfig.DEFAULT_DEVICE_IDs)
         mp.spawn(
             training_setup,
-            args=(world_size,configs),
+            args=(world_size, configs),
             nprocs=world_size,
             join=True
         )

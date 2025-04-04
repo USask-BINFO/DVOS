@@ -1,0 +1,32 @@
+# Path to CSV file containing metadata for already segmented images
+segmented_images_meta_csv_path: data/segmented/segmented_images_metadata_paths.csv
+# Path to real object metadata (used as source for compositing or evaluation)
+real_metadata_path: data/simulation/foreground/real.csv
+# Path to fake/generated object metadata (used for simulations or augmentations)
+fake_metadata_path: data/simulation/foreground/fake.csv
+# File extension of segmentation masks or images
+segment_extension: .png
+# Minimum allowed object size (in pixels) for inclusion in dataset
+min_object_size_in_pixel: 400
+# Number of fake/generated samples to create per real sample
+num_fakes_per_real: 10
+# Optional HSV color swap settings (null disables color changes)
+swap_color: null
+# Example HSV color swap (uncomment and customize if using swap_color)
+  # source: [25, 40]   # e.g., green in HSV
+  # destin: [0, 30]    # e.g., yellow in HSV
+
+# Some of the following parameters are only for setting up the transformation pipeline and will not be used for small objects. 
+transformer:
+  # Output image height after transformation
+  height: 1024
+  # Output image width after transformation
+  width: 1024
+  # Maximum rotation angle to apply to objects (in degrees)
+  rotation_angle: 45
+  # Probability of applying rotation transformation
+  rotation_p: 0.5
+  # Probability of applying elastic distortion
+  elast_p: 0.5
+  # Index of transformation pipeline to use (0 = no transformations)
+  trfm_index: 0

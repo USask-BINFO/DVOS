@@ -1,0 +1,28 @@
+# This config file is uses for video frame extraction
+# Path to the input CSV file containing metadata for the source videos
+videos_meta_csv_path: data/videos/background_video_metadata.csv
+
+# Path to the output CSV file where the processed metadata will be saved
+output_metadata_path: data/videos/background_frames/background_frames_metadata.csv
+
+# Extension of frame image files to be processed (e.g., .png, .jpg)
+frame_extension: .png
+
+# Optional color swap settings; set to null if no color adjustment is needed
+swap_color: null
+#  source: [0, 30] # yellow
+#  destin: [25, 40] # green
+
+transformer:
+  # Desired height and width of the output frames after transformation
+  height: 1024
+  width: 1024
+  # Maximum rotation angle (in degrees) to apply during augmentation
+  rotation_angle: 45
+  # Probability of applying a rotation to a frame
+  rotation_p: 0.5
+  # Probability of applying elastic transformation (e.g., warping)
+  elast_p: 0.5
+  # Index of the transformation pipeline; use 0 to disable transformations
+  # See transformatinos in the utils/transformations.py for other options
+  trfm_index: 0

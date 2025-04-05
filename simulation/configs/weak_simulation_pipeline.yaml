@@ -1,0 +1,65 @@
+# =========================
+# General Simulation Settings
+# =========================
+Basics:
+  SEED: 42                                        # Random seed for reproducibility.
+  CREATE_OVERLAID_VIDEO: False                    # If True, outputs videos with all foreground/background objects overlaid.
+  FRAMES_PER_SECOND: 10                           # Frame rate for the generated videos.
+  VIDEOS_OUT_DIR: data/simulated/green/videos/    # Directory to save the generated videos.
+  VIDEOS_IDS_PREFIX: G                            # Prefix used for naming video files.
+  OUT_SIMULATION_DIR: data/simulated/green/       # Root directory for simulation output (e.g., frames, masks).
+  OUT_METADATA_PATH: data/simulated/green_metadata.csv     # Path to the output CSV summarizing simulation metadata.
+
+# =========================
+# Metadata Sources
+# =========================
+
+# List of CSV files containing metadata for background videos.
+BackgroundMetadata:
+  - data/backgrounds/metadata/green00.csv
+  - data/backgrounds/metadata/green01.csv
+
+# Metadata for real foreground objects (e.g., crops, plants).
+RealObjectMetadata:
+  - data/foreground/metadata/real01.csv
+  - data/foreground/metadata/real02.csv
+
+# Metadata for fake patches (synthetic objects or decoys).
+FakePatchMetadata:
+  - data/foreground/metadata/fake01.csv
+  - data/foreground/metadata/fake02.csv
+
+# =========================
+# Per-frame Simulation Parameters
+# =========================
+Frame:
+  FRAME_MOVEMENT_RANGE: [0, 10]           # Range (in pixels) for random frame shifts between consecutive frames.
+  NODE_MOVEMENT_RANGE: [0, 5]             # Max shift (in pixels) for object movement across frames.
+  NUM_REALS_PER_FRAME: [10, 100]          # Range for number of real foreground objects per frame.
+  NUM_FAKES_PER_FRAME: [10, 100]          # Range for number of fake patches per frame.
+  RECOVERY_VARIANCE: 3                    # Variance for object reappearance after being temporarily removed.
+  ALLOW_LEAVE_FRAME: false                # If false, objects are restricted to remain fully within the frame bounds.
+  RECOVERY_AREA_EXPANSION: 3              # Multiplier to expand the area during object recovery (spatial placement).
+  CHANGE_DIRECTION_PROBABILITY: 0.05      # Probability for an object to change movement direction in the next frame.
+
+# =========================
+# Data Augmentation Settings
+# =========================
+Transformations:
+  HORIZONAL_FLIP_PROB: 0.0                # Probability of applying horizontal flip.
+  VERTICAL_FLIP_PROB: 0.0                 # Probability of applying vertical flip.
+  ROTATE_RANGE: [1, 5]                    # Range (in degrees) for rotation when applied.
+  ROTATE_PROB: 0.3                        # Probability of applying rotation.
+  ELASTIC_ALPHA: [0, 2]                   # Alpha range for elastic deformation (intensity).
+  ELASTIC_SIGMA: [0, 10]                  # Sigma range for elastic deformation (smoothness).
+  ELASTIC_ALPHA_AFFINE: [0, 15]           # Range for affine transformations in elastic deformation.
+  ELASTIC_PROB: 0.3                       # Probability of applying elastic transformations.
+
+# =========================
+# Output Video Configuration
+# =========================
+Video:
+  VIDEO_HEIGHT: 1024                      # Height of the generated video frames (in pixels).
+  VIDEO_WIDTH: 1024                       # Width of the generated video frames (in pixels).
+  VIDEO_PER_BACKGROUND: 20               # Number of videos to generate for each background image.
+  NUM_REQUIRED_FRAMES: 60                # Number of frames per generated video.

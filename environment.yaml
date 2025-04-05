@@ -1,0 +1,33 @@
+name: DVOSEnv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - matplotlib
+  - opencv
+  - pillow
+  - pyyaml
+  - scikit-image
+  - tqdm
+  - pytorch
+  - torchvision
+  - seaborn
+  - pip
+  - pip:
+      - albumentations
+      - einops
+      - omegaconf
+      - simpleitk
+      - torchmetrics
+      - pytorch-msssim
+      - box
+      - icecream
+      - progressbar2
+      - gdown
+      - gitpython
+      - git+https://github.com/cheind/py-thin-plate-spline
+      - hickle
+      - tensorboard

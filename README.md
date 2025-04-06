@@ -69,8 +69,6 @@ Pretrained models for both DVOS and XMem are included within their respective co
 **Training DVOS model**
 Set the config file properly from DVOSCode pipeline.  
 ```bash
-cd DVOSCode/
-
 python3 ddp_experiment.py --config configs/configs.yaml
 ```
 **Note**: Example CSV files required for simulation and training are included in the data directory for reference.
@@ -79,8 +77,6 @@ python3 ddp_experiment.py --config configs/configs.yaml
 To train XMem model run the following command inside XMem pipeline:
 
 ```bash
-cd DVOSXMem/
-
 torchrun --master_port 25763 --nproc_per_node=2 train.py \
   --stage 2 \
   --s2_batch_size 16 \

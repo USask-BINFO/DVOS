@@ -68,6 +68,9 @@ This will automatically generate the corresponding metadata, organized into CSV 
 ---
 
 ## Usage
+### Pretrained Weights
+Pretrained model weights are available at [this link](https://drive.google.com/file/d/10Sztp_8fzEDx7lsa1ilr5Er4G3l_pmWK/view?usp=sharing).
+
 ### Data Organization
 - **DVOSCode Pipeline**:  
   For this pipeline, the frames and masks are stored in CSV files. You can find the CSV metadata inside the `data/` folder, which contains all the necessary references for the frames and masks.

@@ -1,0 +1,2 @@
+Image,Mask,OutDir                                                                                                                                             
+data/segmented/image01.png,data/segmented/mask01.nrrd,data/extracted/foregrounds/sample01/

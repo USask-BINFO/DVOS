@@ -1,0 +1,11 @@
+VID,FID,Image,Mask,Label
+VId-00000,0,TestData/frames/VId-00000/00000.png,TestData/masks/VId-00000/00000.png,0
+VId-00000,1,TestData/frames/VId-00000/00001.png,TestData/masks/VId-00000/00001.png,0
+VId-00000,2,TestData/frames/VId-00000/00002.png,TestData/masks/VId-00000/00002.png,0
+VId-00000,3,TestData/frames/VId-00000/00003.png,TestData/masks/VId-00000/00003.png,0
+VId-00000,4,TestData/frames/VId-00000/00004.png,TestData/masks/VId-00000/00004.png,1
+VId-00001,5,TestData/frames/VId-00001/00005.png,TestData/masks/VId-00001/00005.png,0
+VId-00001,6,TestData/frames/VId-00001/00006.png,TestData/masks/VId-00001/00006.png,0
+VId-00001,7,TestData/frames/VId-00001/00007.png,TestData/masks/VId-00001/00007.png,0
+VId-00001,8,TestData/frames/VId-00001/00008.png,TestData/masks/VId-00001/00008.png,0
+VId-00001,9,TestData/frames/VId-00001/00009.png,TestData/masks/VId-00001/00009.png,1

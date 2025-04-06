@@ -1,3 +1,4 @@
+import argparse
 import glob 
 import os
 
@@ -113,12 +114,22 @@ def calculate_and_save_metrics(image_paths: List[str],
 
 
 if __name__ == "__main__": 
-    gt_dir         = "PseudoLabeledData/testing"
-    prediction_dir = "Feb20_00.24.14_PseudoData-PretrainedOnSyntheticDataWhichTrainedOnS012_s2/TestData/Pseudo/Model-35000"
-    print(f"Scoring the prediction of model {prediction_dir.split('/')[-1]}.")
-    pr_dir         = os.path.join("Predictions/", prediction_dir)
-    overlay_interval = 100
-    
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description="Calculate final evaluation score")
+    parser.add_argument('--gt_dir', type=str, required=True, help="Ground truth directory")
+    parser.add_argument('--pr_dir', type=str, required=True, help="Prediction directory")
+    parser.add_argument('--scores_dir', type=str, required=True, help="Output scoring directory")
+    parser.add_argument('--overlay_interval', type=int, default=100, help="Interval for overlay")
+    args = parser.parse_args()
+
+    gt_dir = args.gt_dir
+    pr_dir = args.pr_dir
+    overlay_interval = args.overlay_interval
+
+    print(f"Ground Truth Directory: {gt_dir}")
+    print(f"Prediction Directory: {pr_dir}")
+    print(f"Overlay Interval: {overlay_interval}")
+
     image_paths = [
         sorted(glob.glob(os.path.join(gt_dir, "frames", item, "*.png")))[-1]
         for item in sorted(os.listdir(os.path.join(gt_dir, "frames")))
@@ -136,7 +147,7 @@ if __name__ == "__main__":
         image_paths, 
         gt_paths, 
         pr_paths, 
-        os.path.join("Scoring", prediction_dir), 
+        args.scores_dir, 
         "scores.csv", 
         overlay_interval=overlay_interval
     )

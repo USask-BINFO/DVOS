@@ -14,13 +14,13 @@
 
 ## Setup
 
-### 1. Clone Repository
+### Clone Repository
 ```bash
 git clone https://github.com/KeyhanNajafian/DVOS.git
 cd DVOS
 ```
 
-### 2. Create Environment
+### Create Environment
 We recommend using Conda:
 ```bash
 conda env create -f environment.yaml
@@ -31,8 +31,9 @@ Alternatively, using pip:
 pip install -r requirements.txt
 ```
 
-### Prepare the data for video synthesis
-### Configuration Files
+---
+
+## Video synthesis
 
 This repository is primarily driven by YAML configuration files:
 
@@ -51,8 +52,18 @@ This repository is primarily driven by YAML configuration files:
   <p><em>Figure 3: This diagram illustrates the process of synthesizing videos.</em></p>
 </div>
 
-### 4. Pretrained Models
-Pretrained models for both DVOS and XMem are included within their respective code pipelines.
+You can use the following scripts in the extraction module along with their corresponding config files to extract video frames and objects:
+```bash
+python frames_extractor.py --config configs/frames_extractor.yaml
+
+python objects_extractor.yaml --config configs/objects_extractor.yaml
+```
+The extracted frames and objects will be organized into CSV files and can be used for data synthesis. To do this, modify the config file `simulation/configs/simulation_pipeline.yaml` and run the following command in the simulation module:
+
+```bash
+python simulator.py --config configs/simulator.yaml
+```
+This will automatically generate the corresponding metadata, organized into CSV files, which can be directly used for model training with DVOSCode.
 
 ---
 
@@ -90,7 +101,7 @@ torchrun --master_port 25763 --nproc_per_node=2 train.py \
   --exp_id experiment_name
   ```
 **Note**: The XMem pipeline used in this project is a slightly modified version of the original [XMem repository](https://github.com/hkchengrex/XMem). You can still access the original version at the provided link.
->  
+
 ### Evaluation
 **Evaluating DVOSXMem**
 To run evaluation, make sure to:

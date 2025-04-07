@@ -3,7 +3,7 @@
 
 ## Overview
 
-> This repository contains the official implementation for the paper "A Semi-Self-Supervised Approach for Dense-Pattern Video Object Segmentation". We tackle the challenging task of Dense Video Object Segmentation (DVOS) in agricultural settings, particularly wheat head segmentation, where objects are numerous, small, occluded, and move unpredictably. Our approach uses a semi-self-supervised method leveraging synthetic data and pseudo-labels, significantly reducing the need for costly manual video annotations. The core of our method is a multi-task UNet-style architecture enhanced with diffusion and spatiotemporal attention mechanisms.
+This repository contains the official implementation for the paper "A Semi-Self-Supervised Approach for Dense-Pattern Video Object Segmentation". We tackle the challenging task of Dense Video Object Segmentation (DVOS) in agricultural settings, particularly wheat head segmentation, where objects are numerous, small, occluded, and move unpredictably. Our approach uses a semi-self-supervised method leveraging synthetic data and pseudo-labels, significantly reducing the need for costly manual video annotations. The core of our method is a multi-task UNet-style architecture enhanced with diffusion and spatiotemporal attention mechanisms.
 
 <div style="text-align: justify;">
   <img src="data/readme/main_figure02.png" alt="" width="500"/>
@@ -26,21 +26,21 @@ We recommend using Conda:
 conda env create -f environment.yaml
 conda activate DVOSEnv
 ```
-Alternatively, using pip:
+Alternatively, use pip:
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## Video synthesis
+## Video Synthesis
 
 This repository is primarily driven by YAML configuration files:
 
 - **Frame and Object Extraction:** Config files are located in `extraction/configs/`
 - **Video Synthesis:** Config files are located in `simulation/configs/`
 
-**Note**: The sample CSV files can be found in `data/` directory. 
+**Note**: The sample CSV files can be found in the `data/` directory. 
 
 <div style="text-align: justify;">
   <img src="data/readme/sub_figure01.png" alt="" width="500"/>
@@ -76,19 +76,19 @@ Pretrained model weights are available at [this link](https://drive.google.com/f
   For this pipeline, the frames and masks are stored in CSV files. You can find the CSV metadata inside the `data/` folder, which contains all the necessary references for the frames and masks.
 
 - **DVOSXMem Pipeline**:  
-  For this pipeline, you need to organize your data in a `root folder` with two subfolders: `frames/` and `masks`. Inside these subfolders, create identical short video clips subfolders, each containing the corresponding frames and masks for each video.
+  For this pipeline, you need to organize your data in a `root folder` with two subfolders: `frames/` and `masks`. Inside these subfolders, create identical short video clip subfolders, each containing the corresponding frames and masks for each video.
 
 
 ### Training
 **Training DVOS model**
-Set the config file properly from DVOSCode pipeline.  
+Set the config file properly from the DVOSCode pipeline.  
 ```bash
 python3 ddp_experiment.py --config configs/configs.yaml
 ```
 **Note**: Example CSV files required for simulation and training are included in the data directory for reference.
 
 **Training XMem model**
-To train XMem model run the following command inside XMem pipeline:
+To train the XMem model, run the following command inside the XMemCode pipeline:
 
 ```bash
 torchrun --master_port 25763 --nproc_per_node=2 train.py \
@@ -107,10 +107,10 @@ torchrun --master_port 25763 --nproc_per_node=2 train.py \
 
 ### Evaluation
 **Evaluating DVOSXMem**
-To run evaluation, make sure to:
+To run the evaluation, make sure to:
 
 1. Set the configuration file to the `TEST` phase.
-2. Specify the path to the best pretrained model you want to evaluate.
+2. Specify the path to the best-pretrained model you want to evaluate.
 
 ```bash
 python3 ddp_experiment.py --config configs/configs.yaml

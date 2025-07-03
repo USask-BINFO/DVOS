@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository contains the official implementation for the paper "A Semi-Self-Supervised Approach for Dense-Pattern Video Object Segmentation". We tackle the challenging task of Dense Video Object Segmentation (DVOS) in agricultural settings, particularly wheat head segmentation, where objects are numerous, small, occluded, and move unpredictably. Our approach uses a semi-self-supervised method leveraging synthetic data and pseudo-labels, significantly reducing the need for costly manual video annotations. The core of our method is a multi-task UNet-style architecture enhanced with diffusion and spatiotemporal attention mechanisms.
+This repository contains the official implementation for the paper [A Semi-Self-Supervised Approach for Dense-Pattern Video Object Segmentation](https://openaccess.thecvf.com/content/CVPR2025W/V4A/papers/Najafian_A_Semi-Self-Supervised_Approach_for_Dense-Pattern_Video_Object_Segmentation_CVPRW_2025_paper.pdf). We tackle the challenging task of Dense Video Object Segmentation (DVOS) in agricultural settings, particularly wheat head segmentation, where objects are numerous, small, occluded, and move unpredictably. Our approach uses a semi-self-supervised method leveraging synthetic data and pseudo-labels, significantly reducing the need for costly manual video annotations. The core of our method is a multi-task UNet-style architecture enhanced with diffusion and spatiotemporal attention mechanisms.
 
 <div style="text-align: justify;">
   <img src="data/readme/main_figure02.png" alt="" width="500"/>

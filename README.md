@@ -140,10 +140,10 @@ python scoring.py --gt_dir base_test_root_dir --pr_dir prediction_dir_path --ove
 ## Citation
 ```bibtex
 @inproceedings{najafian2025semi,
-  author    = {Keyhan Najafian, Farhad Maleki, Lingling Jin, and Ian Stavness},
   title     = {A Semi-Self-Supervised Approach for Dense-Pattern Video Object Segmentation},
-  booktitle = {Vision for Agriculture Workshop, {IEEE/CVF} Conference on Computer Vision and Pattern Recognition (CVPR) 2025},
-  year      = {2025},
-  note      = {To appear}
+  author    = {Najafian, Keyhan and Maleki, Farhad and Jin, Lingling and Stavness, Ian},
+  booktitle = {Proceedings of the Computer Vision and Pattern Recognition (CVPR) Conference},
+  pages     = {5412--5421},
+  year      = {2025}
 }
 ```
